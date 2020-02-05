@@ -47,7 +47,7 @@ void Bscan::mem_alloc(){
 
 };
 
-void Bscan::stack_Ascans(double *tofs){
+double Bscan::stack_Ascans(double *tofs){
 	int i,j,jd;
 	double idly;
 	tof=tofs[0];
@@ -65,6 +65,13 @@ void Bscan::stack_Ascans(double *tofs){
 		}
 //		amp_sum[i]/=Ny;
 	}
+
+	double amax=0.0;
+	for(j=0;j<Nt;j++){
+	     	if(amax < abs(amp_sum[j])) amax=abs(amp_sum[j]);
+	}
+	return(amax);
+	
 };
 double Bscan::get_Asum(int inc_ntof){
 	int mtof=inc_ntof+ntof;

@@ -144,8 +144,12 @@ int main(){
 	PL.set_src(xin[0],xin[1]);	// Incident point
 	PL.rcv.set_tof(t_wedge);
 	PL.TOFs(down,1,cT);
-	bwv_in.stack_Ascans(PL.rcv.tf);
+	double amax;
+	amax=bwv_in.stack_Ascans(PL.rcv.tf);
 	bwv_in.fwrite_Ascan(fascn_in);
+
+	printf("amax=%lf\n",amax);
+
 
 
 	char fascn_sc[128]="ascan_sc.out";

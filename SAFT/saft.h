@@ -21,7 +21,7 @@ class Bscan{
 		double t0,dt;
 		double **amp;
 		double *amp_sum;
-		void stack_Ascans(double* delay);
+		double stack_Ascans(double* delay);
 		void fwrite_Ascan(char fname[128]);
 		void fwrite_Bscan();
 		void load(char fn[128]);
