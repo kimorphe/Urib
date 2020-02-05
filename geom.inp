@@ -1,0 +1,16 @@
+# ht: plate thickness[mm]
+ 12.0
+# xin[0]: incident point x-coordinate [mm]
+ 52.5
+# xr1[0]: Receiver x-coordinates (start)[mm]
+ 22.5  
+# xr2[0]: Receiver x-coordinates (end) [mm]
+ 2.5
+# nre: number of receiver points
+ 81
+# wave velocity [km/s]
+ 3.036
+# delay time (due to the transudcer's shoe) [micro sec]
+ 8.162
+# nref (maximum number of reflections to be considered)
+ 6

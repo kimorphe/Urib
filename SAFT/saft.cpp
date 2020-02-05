@@ -3,325 +3,10 @@
 #include<math.h>
 #include"saft.h"
 
-
-void Bscan::load(char fname[128]){
-	FILE *fp=fopen(fname,"r");
-	if(fp==NULL){
-		printf("Cann't find file %s\n",fname);
-		printf(" --> abort process.");
-		exit(-1);
-	}
-
-	char cbff[128];
-
-	fgets(cbff,128,fp);
-	fscanf(fp,"%d\n",&Ny);
-	fgets(cbff,128,fp);
-	fscanf(fp,"%lf, %lf, %d\n",&t0,&dt,&Nt);
-	fgets(cbff,128,fp);
-	printf("Ny,Nt=%d %d\n",Ny,Nt);
-
-	Bscan::mem_alloc();
-
-	int i,j;
-	double tmp;
-	for(i=0; i<Ny;i++){
-	for(j=0; j<Nt;j++){
-		//fscanf(fp,"%lf\n",amp[i]+j);
-		fscanf(fp,"%lf\n",&tmp);
-		amp[i][j]=tmp;
-	}
-	}
-
-	fclose(fp);
-};
-
-void Bscan::mem_alloc(){
-	double *pt=(double *)malloc(sizeof(double)*Nt*Ny);
-	amp=(double **)malloc(sizeof(double *)*Ny);
-	int i;
-	for(i=0;i<Nt*Ny;i++) pt[i]=0.0;
-	for(i=0;i<Ny;i++) amp[i]=pt+Nt*i;
-
-	amp_sum=(double *)malloc(sizeof(double)*Nt);
-	for(i=0;i<Nt;i++) amp_sum[i]=0.0;
-
-};
-
-void Bscan::stack_Ascans(double *tofs){
-	int i,j,jd;
-	double idly;
-	tof=tofs[0];
-	ntof=int((tof-t0)/dt);
-
-	for(j=0;j<Nt;j++) amp_sum[j]=0.0;
-
-	for(i=0;i<Ny;i++){
-		idly=int((tofs[i]-tof)/dt);
-		for(j=0;j<Nt;j++){
-			jd=j+idly;
-			if(jd<0) continue;
-			if(jd>Nt-1) continue;
-			amp_sum[j]+=amp[i][jd];
-		}
-//		amp_sum[i]/=Ny;
-	}
-};
-double Bscan::get_Asum(int inc_ntof){
-	int mtof=inc_ntof+ntof;
-	if(mtof<0) return(0);
-	if(mtof>Nt-1) return(0);
-	return(amp_sum[mtof]);
-};
-void Bscan::fwrite_Ascan(char fname[128]){
-	FILE *fp=fopen(fname,"w");
-	int i;
-	for(i=0;i<Nt;i++){
-		fprintf(fp,"%lf %lf\n",t0+dt*i,amp_sum[i]);
-	}
-	fprintf(fp,"\n");
-	fprintf(fp,"%lf %lf\n",tof,5.0);
-	fprintf(fp,"%lf %lf\n",tof,-5.0);
-	fclose(fp);
-};
-void Bscan::fwrite_Bscan(){
-	FILE *fp=fopen("bscan.out","w");
-	int i,j;
-
-	fprintf(fp,"#\n");
-	fprintf(fp,"%d\n",Ny);
-	fprintf(fp,"#\n");
-	fprintf(fp,"%lf, %lf, %d\n",t0,dt,Nt);
-	fprintf(fp,"#\n");
-	for(j=0;j<Ny;j++){
-	for(i=0;i<Nt;i++){
-		fprintf(fp,"%lf\n",amp[j][i]);
-	}
-	}
-	fclose(fp);
-};
-
-
-Plate::Plate(double z_bottom, double z_top){
-	zb=z_bottom;
-	zt=z_top;
-	zs[0]=zb;
-	zs[1]=zt;
-	ht=zt-zb;
-};
-void Plate::set_src(double x, double y){
-	xs[0]=x; xs[1]=y;
-};
-double Plate::mirror(
-	double zcod, 
-	int ud,	// -1:down, +1:up
-	int nref // number of reflection
-){
-	if(nref==0) return(zcod);
-	double zimg;
-	if(ud==-1){	// downward mirror operationo
-		zimg=2.*zb-zcod;
-	}else if(ud==1){
-		zimg=2.*zt-zcod;
-	}
-	nref--;
-	if(nref >0) zimg=mirror(zimg,-ud,nref);
-	return(zimg);
-};
-
-double Plate::path(double xs[2], double xr[2], int ud, int nref){
-
-	double xsd[2],rx,ry;
-		
-	xsd[0]=xs[0];
-	xsd[1]=mirror(xs[1],ud,nref);
-
-	rx=xr[0]-xsd[0];
-	ry=xr[1]-xsd[1];
-
-	double xi,zi;
-	int isgn,isrf;
-
-	double eps=1.e-08;
-	if(xsd[1]==zt) xsd[1]+=eps; 
-	if(xsd[1]==zb) xsd[1]-=eps; 
-
-	if(xsd[1]> zt){
-		zi=zt;
-		isgn=1;	
-		isrf=1;
-	}else{
-		zi=zb;
-		isgn=-1;
-		isrf=0;
-	};
-
-	printf("%lf %lf\n",xr[0],xr[1]);
-	double dz;
-	for(int i=0;i<nref;i++){
-		xi=(xsd[1]-zi)*xr[0]+(zi-xr[1])*xs[0];
-		dz=xsd[1]-xr[1];
-		if(abs(dz)<eps) dz=eps;
-		xi/=dz;
-		printf("%lf %lf\n",xi,zs[isrf%2]);
-		zi+=(isgn*ht);
-		isrf++;
-	};
-	printf("%lf %lf\n",xs[0],xs[1]);
-	return(sqrt(rx*rx+ry*ry));
-};
-
-double Plate::TOF(double xs[2], double xr[2], int ud, int nref, double c){
-
-	double xsd[2],rx,ry;
-		
-	xsd[0]=xs[0];
-	xsd[1]=mirror(xs[1],ud,nref);
-
-	rx=xr[0]-xsd[0];
-	ry=xr[1]-xsd[1];
-
-	return(sqrt(rx*rx+ry*ry)/c);
-};
-void Plate::TOFs(int ud, int nref, double c)
-{
-	double xsd[2],rx,ry;
-	int i;
-
-	xsd[0]=xs[0];
-	xsd[1]=mirror(xs[1],ud,nref);
-	for(i=0;i<rcv.nrec; i++){
-		rx=xsd[0]-rcv.xr[i];
-		ry=xsd[1]-rcv.yr[i];
-		rcv.tf[i]+=sqrt(rx*rx+ry*ry)/c;
-	}
-};
-void Plate::write_tx(char fname[128],char mode[2]){
-	FILE *fp=fopen(fname,mode);
-	for(int i=0;i<rcv.nrec; i++){
-		fprintf(fp,"%lf %lf %lf\n",rcv.tf[i],rcv.xr[i],rcv.yr[i]);
-	}
-	//fprintf(fp,"\n");
-	fclose(fp);
-};
-
-//---------------------------------------------------
-void Recs::set_xr1(double x, double y){
-	xr1[0]=x;
-	xr1[1]=y;
-};
-void Recs::set_xr2(double x, double y){
-	xr2[0]=x;
-	xr2[1]=y;
-};
-void Recs::gen(int n){
-	nrec=n;
-	dxr[0]=0.0; dxr[1]=0.0;
-	if(n>1){
-		dxr[0]=(xr2[0]-xr1[0])/(nrec-1);
-		dxr[1]=(xr2[1]-xr1[1])/(nrec-1);
-	};
-
-	xr=(double *)malloc(sizeof(double)*nrec);
-	yr=(double *)malloc(sizeof(double)*nrec);
-	tf=(double *)malloc(sizeof(double)*nrec);
-
-	for(int i=0;i<nrec;i++){
-		xr[i]=xr1[0]+dxr[0]*i;
-		yr[i]=xr1[1]+dxr[1]*i;
-		tf[i]=0.0;
-	};
-};
-void Recs::print_cods(){
-	puts("### Receiver Coordinates");
-	for(int i=0;i<nrec;i++){
-		printf("%lf %lf\n",xr[i],yr[i]);
-	};
-};
-void Recs::set_tof(double val){
-	for(int i=0;i<nrec;i++) tf[i]=val;
-};
-//---------------------------------------------------
-class IMG{
-	public:
-		double Xa[2],Xb[2],dx[2],Wd[2];
-		int Ndiv[2],Ng[2]; 
-		int npnt;
-		double **V; 
-		IMG();
-		void set_Xa(double x, double y);
-		void set_Wd(double W, double H);
-		void set_Ng(int nx, int ny);
-		double get_xcod(int l);
-		double get_ycod(int l);
-		void set_V(int l,double val);
-		void fwrite_V(char fn[128]);
-	private:
-		void mem_alloc();
-};
-IMG::IMG(){
-	Xa[0]=0.0; Xa[1]=0.0;
-	Wd[0]=1.0; Wd[1]=1.0;
-};
-void IMG::set_Xa(double x, double y){
-	Xa[0]=x; Xa[1]=y;
-};
-void IMG::set_Wd(double W, double H){
-	Wd[0]=W; Wd[1]=H;
-	Xb[0]=Xa[0]+W;
-	Xb[1]=Xa[1]+H;
-};
-void IMG::set_Ng(int nx, int ny){
-	Ng[0]=nx; Ng[1]=ny;
-	for(int i=0;i<2;i++){
-		Ndiv[i]=Ng[i]-1;
-		dx[i]=0.0;
-		if(Ndiv[i]>0) dx[i]=Wd[i]/Ndiv[i];
-	}
-	IMG::mem_alloc();
-	npnt=Ng[0]*Ng[1];
-};
-void IMG::mem_alloc(){
-	double *pt=(double *)malloc(sizeof(double)*Ng[0]*Ng[1]);
-	V=(double **)malloc(sizeof(double *)*Ng[0]);
-
-	int i;
-	for(i=0;i<Ng[0]*Ng[1];i++) pt[i]=0.0;
-	for(i=0;i<Ng[0];i++) V[i]=pt+Ng[1]*i;
-};
-
-double IMG::get_xcod(int l){
-	int i=l/Ng[1];
-	return(Xa[0]+i*dx[0]);
-};
-double IMG::get_ycod(int l){
-	int j=l%Ng[1];
-	return(Xa[1]+j*dx[1]);
-};
-void IMG::set_V(int l,double val){
-	int i=l/Ng[1];
-	int j=l%Ng[1];
-	V[i][j]=val;
-};
-void IMG::fwrite_V(char fname[128]){
-	FILE *fp=fopen(fname,"w");
-	int i,j;
-	fprintf(fp,"# Xa[0]  Xa[1]\n");
-	fprintf(fp,"%lf %lf\n",Xa[0],Xa[1]);
-	fprintf(fp,"# Xb[0]  Xb[1]\n");
-	fprintf(fp,"%lf %lf\n",Xb[0],Xb[1]);
-	fprintf(fp,"# Ng[0]  Ng[1]\n");
-	fprintf(fp,"%d %d\n",Ng[0],Ng[1]);
-	fprintf(fp,"# Values\n");
-	for(i=0;i<Ng[0];i++){
-	for(j=0;j<Ng[1];j++){
-		fprintf(fp," %lf\n",V[i][j]);
-	}
-	}
-	fclose(fp);
-};
-
 int main(){
+
+	char fgeom[128]="geom.inp";
+	FILE *fp=fopen(fgeom,"r");
 
 //	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	char fdat_in[128]="wave_in4_2.dat";	// B-scan data (incident wave) 
@@ -338,22 +23,55 @@ int main(){
 
 //		Plate Geometry 
 	double ht=12.0;	// plate thickness
-	double zb=-ht,zt=0.0;
-	Plate PL(zb, zt);	// set plate surfaces
-
-	double xin[2],xsc[2];
-//	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	//xin[0]=51.5; xin[1]= 0.0;	// source point
-	xin[0]=52.5; xin[1]= 0.0;	// source point
-	//xsc[0]=-7.0; xsc[1]=-4.0;	// scatterer location (used for TOF plotting)
-	xsc[0]=-7.0; xsc[1]=-4.0;	// scatterer location (used for TOF plotting)
-	//PL.rcv.set_xr1(20.0, 0.0); // receiver array (start)
-	//PL.rcv.set_xr2( 0.0, 0.0); // receiver array (end)
-	PL.rcv.set_xr1(22.5, 0.0); // receiver array (start)
-	PL.rcv.set_xr2( 2.5, 0.0); // receiver array (end)
-	PL.rcv.gen(81);	// generate reciver array (given number of receivers)
+	double xin[2]={0.0,0.0};
+	double xsc[2]={0.0,0.0};
+	double xr1[2]={0.0,0.0};
+	double xr2[2]={0.0,0.0};
 	double cT=3.036;	// wave velocity [km/s]
 	double t_wedge=8.162;	// travel time in wedge [micro sec]
+	int nrec,nref=6;
+
+	xsc[0]=-7.0; xsc[1]=-4.0;	// scatterer location (used for TOF plotting)
+
+	char cbff[128];
+	fgets(cbff,128,fp);
+	fscanf(fp,"%lf\n",&ht);
+	fgets(cbff,128,fp);
+	fscanf(fp,"%lf\n",xin);
+	fgets(cbff,128,fp);
+	fscanf(fp,"%lf\n",xr1);
+	fgets(cbff,128,fp);
+	fscanf(fp,"%lf\n",xr2);
+	fgets(cbff,128,fp);
+	fscanf(fp,"%d\n",&nrec);
+	fgets(cbff,128,fp);
+	fscanf(fp,"%lf\n",&cT);
+	fgets(cbff,128,fp);
+	fscanf(fp,"%lf\n",&t_wedge);
+	fgets(cbff,128,fp);
+	fscanf(fp,"%d\n",&nref);
+	fclose(fp);
+
+	printf("t_wedge=%lf nref=%d\n",t_wedge,nref);
+
+	double zb=-ht,zt=0.0;
+
+	Plate PL(zb, zt);	// set plate surfaces
+
+//	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	//xin[0]=51.5; xin[1]= 0.0;	// source point
+	//xin[0]=52.5; xin[1]= 0.0;	// source point
+
+	//PL.rcv.set_xr1(20.0, 0.0); // receiver array (start)
+	//PL.rcv.set_xr2( 0.0, 0.0); // receiver array (end)
+
+	//PL.rcv.set_xr1(22.5, 0.0); // receiver array (start)
+	//PL.rcv.set_xr2( 2.5, 0.0); // receiver array (end)
+	//PL.rcv.gen(81);	// generate reciver array (given number of receivers)
+
+	PL.rcv.set_xr1(xr1[0],xr1[1]); // receiver array (start)
+	PL.rcv.set_xr2(xr2[0],xr2[1]); // receiver array (end)
+	PL.rcv.gen(nrec);	// generate reciver array (given number of receivers)
 //	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -363,8 +81,7 @@ int main(){
 
 //	----------- Draw Travel Time Curves -------------
 	PL.set_src(xin[0],xin[1]);	// Incident point
-	int nref=6;
-	FILE *fp=fopen(ftof_in,"w");
+	fp=fopen(ftof_in,"w");
 	fprintf(fp,"# ncrv, nrec\n");
 	fprintf(fp," %d, %d\n",nref/2+1,PL.rcv.nrec);	
 	fclose(fp);
@@ -418,6 +135,8 @@ int main(){
 		}
 	}
 	printf("ncrv=%d\n",ncrv);
+	fclose(fp);
+
 
 //	--------- Waveform Stacking ----------
 
@@ -427,6 +146,7 @@ int main(){
 	PL.TOFs(down,1,cT);
 	bwv_in.stack_Ascans(PL.rcv.tf);
 	bwv_in.fwrite_Ascan(fascn_in);
+
 
 	char fascn_sc[128]="ascan_sc.out";
 	int dir_in=down; // wave direction upon generation
@@ -439,11 +159,34 @@ int main(){
 	int Nwin=ceil(Wt/bwv_in.dt);
 	double cor;
 
+
+	fp=fopen("saft.inp","r");
+	fgets(cbff,128,fp);
+	fgets(fnout,128,fp);
+	puts(fnout);
+
+	double Xa[2],Xb[2],Wd[2];
+	int Ng[2];
+	fgets(cbff,128,fp);
+	fscanf(fp,"%lf %lf\n",Xa,Xa+1);
+	fgets(cbff,128,fp);
+	fscanf(fp,"%lf %lf\n",Xb,Xb+1);
+	fgets(cbff,128,fp);
+	fscanf(fp,"%d %d\n",Ng,Ng+1);
+	Wd[0]=Xb[0]-Xa[0];
+	Wd[1]=Xb[1]-Xa[1];
+	printf("Ng=%d %d\n",Ng[0],Ng[1]);
+
+	fclose(fp);
+	exit(-1);
 //	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	IMG IM;
-	IM.set_Xa(-10.0-5.0,-12.0);	// Imaging area (lower left corner)
-	IM.set_Wd(20.0,12.0);		// Width x Height [mm]
-	IM.set_Ng(121,81);		// Number of pixels (width x height)
+	//IM.set_Xa(-10.0-5.0,-12.0);	// Imaging area (lower left corner)
+	//IM.set_Wd(20.0,12.0);		// Width x Height [mm]
+	//IM.set_Ng(121,81);		// Number of pixels (width x height)
+	IM.set_Xa(Xa[0],Xa[1]);	// Imaging area (lower left corner)
+	IM.set_Wd(Wd[0],Wd[1]);		// Width x Height [mm]
+	IM.set_Ng(Ng[0],Ng[1]);		// Number of pixels (width x height)
 	
 	//IM.set_Xa(xsc[0],xsc[1]);	// Imaging area (lower left corner)
 	//IM.set_Wd(0.0,0.0);		// Width x Height [mm]

@@ -1,6 +1,19 @@
 Ultrasonic Imaging for Cracks in rib-to-plate welded joint
 
-Ultrasonic waveform data (LDV measured)
-Python codes 
-SAFT imaging c/c++ codes
+1. Ultrasonic waveform data (LDV measured)
+2. Python codes 
+3. SAFT imaging c/c++ codes
+   Sources:
+	(a) saft.cpp 
+		main program
+	(b) bscan.cpp 
+		handles B-scan waveforms
+	(c) img.cpp
+		SAFT image class
+	(d) plate.cpp
+		Plate + receiver array, and ray tracing methods.
+   Header Files:
+	saft.h	
+
+
 

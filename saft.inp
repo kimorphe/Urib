@@ -1,0 +1,8 @@
+# output file name
+saft4_.out
+# Xa[2]: imaging area (lower left corner) [mm]
+ -15.0 -12.0 
+# Xb[2]: imaging area (upper right corner) [mm]
+  5.0  0.0 
+# Ng[2]: number of image pixels 
+  121 81

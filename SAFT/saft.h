@@ -50,3 +50,20 @@ class Plate{
 	private:
 };
 
+class IMG{
+	public:
+		double Xa[2],Xb[2],dx[2],Wd[2];
+		int Ndiv[2],Ng[2]; 
+		int npnt;
+		double **V; 
+		IMG();
+		void set_Xa(double x, double y);
+		void set_Wd(double W, double H);
+		void set_Ng(int nx, int ny);
+		double get_xcod(int l);
+		double get_ycod(int l);
+		void set_V(int l,double val);
+		void fwrite_V(char fn[128]);
+	private:
+		void mem_alloc();
+};
