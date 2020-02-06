@@ -1,4 +1,4 @@
-This is e-pTeX, Version 3.14159265-p3.7.1-161114-2.6 (utf8.euc) (TeX Live 2017/Debian) (preloaded format=platex 2019.2.27)  6 FEB 2020 17:37
+This is e-pTeX, Version 3.14159265-p3.7.1-161114-2.6 (utf8.euc) (TeX Live 2017/Debian) (preloaded format=platex 2018.10.29)  6 FEB 2020 23:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -72,7 +72,17 @@ Package: wrapfig 2003/01/31  v 3.6
 LaTeX Warning: Unused global option(s):
     [a4j].
 
-(./report.aux)
+(./report.aux
+
+LaTeX Warning: Label `eqn:' multiply defined.
+
+
+LaTeX Warning: Label `eqn:' multiply defined.
+
+
+LaTeX Warning: Label `eqn:' multiply defined.
+
+)
 \openout1 = `report.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 15.
@@ -103,18 +113,18 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <6> on input line 49.
  [1
 
-] (./report.aux)
+] [2] (./report.aux)
 
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 889 strings out of 494735
- 11559 string characters out of 6176126
- 70282 words of memory out of 5000000
- 4428 multiletter control sequences out of 15000+600000
+ 893 strings out of 494735
+ 11609 string characters out of 6176125
+ 71282 words of memory out of 5000000
+ 4432 multiletter control sequences out of 15000+600000
  15014 words of font info for 57 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
- 25i,5n,21p,203b,180s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 25i,6n,21p,203b,180s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on report.dvi (1 page, 5276 bytes).
+Output written on report.dvi (2 pages, 9852 bytes).
