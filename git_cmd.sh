@@ -7,6 +7,7 @@ git add git_cmd.sh
 git add *.inp
 git add wave_in4_2.dat
 git add wave_sc4_2.dat
+git add Tex
 
 git commit
 

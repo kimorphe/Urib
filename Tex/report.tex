@@ -1,0 +1,150 @@
+﻿\documentclass[11pt,a4j]{article}
+\usepackage[dvipdfmx]{graphicx,color}
+\usepackage{wrapfig}
+\setlength{\topmargin}{-1.5cm}
+\setlength{\textwidth}{15.5cm}
+\setlength{\textheight}{25.2cm}
+\newlength{\minitwocolumn}
+\setlength{\minitwocolumn}{0.5\textwidth}
+\addtolength{\minitwocolumn}{-\columnsep}
+%\addtolength{\baselineskip}{-0.1\baselineskip}
+%
+\def\Mmaru#1{{\ooalign{\hfil#1\/\hfil\crcr
+\raise.167ex\hbox{\mathhexbox 20D}}}}
+%
+\begin{document}
+\newcommand{\fat}[1]{\mbox{\boldmath $#1$}}
+\newcommand{\D}{\partial}
+\newcommand{\w}{\omega}
+\newcommand{\ga}{\alpha}
+\newcommand{\gb}{\beta}
+\newcommand{\gx}{\xi}
+\newcommand{\gz}{\zeta}
+\newcommand{\vhat}[1]{\hat{\fat{#1}}}
+\newcommand{\spc}{\vspace{0.7\baselineskip}}
+\newcommand{\halfspc}{\vspace{0.3\baselineskip}}
+\bibliographystyle{unsrt}
+%\pagestyle{empty}
+\newcommand{\twofig}[2]
+ {
+   \begin{figure}[h]
+     \begin{minipage}[t]{\minitwocolumn}
+         \begin{center}   #1
+         \end{center}
+     \end{minipage}
+         \hspace{\columnsep}
+     \begin{minipage}[t]{\minitwocolumn}
+         \begin{center} #2
+         \end{center}
+     \end{minipage}
+   \end{figure}
+ }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\vspace*{\baselineskip}
+\begin{center}
+{\Large \bf A Synthetic Aperture Focusing Method for Ultrasonic Imaging}
+\end{center}
+\vspace{10mm}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Let $a(\fat{x},t;\fat{x}_s)$ be an A-scan waveform of time $t$
+measured at $\fat{x}$ when the incident wave is excited by a 
+ source located at $\fat{x}_s$. 
+ We consider synthesizing an ultrasonic image of scattering object for 
+ given set of waveforms $\cal D$ such that 
+\begin{equation}
+	{\cal D} = \left\{
+		a(\fat{x},t;\fat{x}_s)\left| \fat{x}\in {\cal R},t>0 \right.
+	\right\}
+	\label{eqn:bscan_data}
+\end{equation}
+where $\cal R$ denotes the measurement aperture.
+It is assumed that the waveform $a(\fat{x},t;\fat{x}_s)$ may be decomposed into 
+the incident and scattered components as 
+\begin{equation}
+	a(\fat{x},t;\fat{x}_s)=
+	a^{in}(\fat{x},t;\fat{x}_s)
+	+
+	a^{sc}(\fat{x},t;\fat{x}_s).
+	\label{eqn:wv_split}
+\end{equation}
+In what follows, quantities associated with the incident and scattered wave 
+components are denoted by the superscripts "in" and "sc", respectively.
+To explain the delay-and-sum operation we introduce the time-of-flight 
+function:
+\begin{equation}
+	t=T_f(\fat{x},\fat{y})
+	\label{eqn:Tf}
+\end{equation}
+where $\fat{x}$ and $\fat{y}$ denote the points of observation and transmission 
+,respectively. 
+The time-of-flight function $T_f$ is a fuction that returns the 
+travel time required for a wave excited at $\fat{y}$ to arrive at $\fat{x}$.
+The incident wave 
+\begin{equation}
+	t^{in}(\fat{x})=T_f(\fat{x},\fat{x}_s)
+	\label{eqn:}
+\end{equation}
+\begin{equation}
+	t_P^{sc}(\fat{x})=
+	T_f(\fat{x}_P,\fat{x}_s)
+	+
+	T_f(\fat{x},\fat{x}_P)
+	\label{eqn:}
+\end{equation}
+\begin{equation}
+	\bar{a}^{in}(t)=\int _{\cal R} a^{in}(\fat{x},t-t^{in}(\fat{x})+t^{in}(\fat{x}_R))d\fat{x}
+	\label{eqn:}
+\end{equation}
+\begin{equation}
+	\bar{a}^{sc}_P(t)=\int _{\cal R} a^{sc}(\fat{x},t-t^{sc}_P(\fat{x})+t_P^{sc}(\fat{x}_R))d\fat{x}
+	\label{eqn:}
+\end{equation}
+\begin{equation}
+	%I(\fat{x}_P)={\cal S} \left\{ \bar{a}^{sc}_P(t) \right\}
+	I(\fat{x}_P)={\cal S} \left[ \bar{a}^{sc}_P(t) \right]
+	\label{eqn:}
+\end{equation}
+\begin{equation}
+	{\cal S} \left[ 
+		\bar{a}^{sc}_P(t) 
+		\right]
+	=
+	\bar{a}^{sc}_P(t^{sc}_P) 
+	\left(
+	=\left<
+	\delta(t-t_P^{sc}),\,
+	\bar{a}^{sc}_P
+	\right>
+	\right)
+\end{equation}
+\begin{equation}
+	\left< f,g \right>=\int f(t)g(t) dt
+	\label{eqn:}
+\end{equation}
+\begin{equation}
+	{\cal S} \left[ 
+		\bar{a}^{sc}_P(t) 
+		\right]
+	=
+	\left< 
+		\bar{a}^{in}(t+t^{in}-t^{sc}_P) 
+		,\bar{a}^{sc}_P(t) 
+	\right>
+\end{equation}
+
+
+In the followings, the incident wave component is used as a rerference waveform, 
+while the scattered wave component as a signal to synthesize an image of 
+scattering object.
+The imaging alogorithm is consisted of two steps. The first step is 
+the delay-and-sum operation on the A-scans to amplifiy the scattered wave packet of interest.
+The second step is a sampling operation on the resulting A-scan to assign an image 
+intensity to a particular pixel. We go through those steps as follows. 
+
+If the phase velocity $c$ of ultasonic wave is given, the time-of-flight 
+required for the wave to travel from a given source $\fat{x}_s$ to an observation point 
+$\fat{x}$ can be caluculated theoretically. 
+Let the theoretically obtained time-of-flight be
+To 
+
+\end{document}

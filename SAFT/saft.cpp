@@ -182,7 +182,6 @@ int main(){
 	printf("Ng=%d %d\n",Ng[0],Ng[1]);
 
 	fclose(fp);
-	exit(-1);
 //	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	IMG IM;
 	//IM.set_Xa(-10.0-5.0,-12.0);	// Imaging area (lower left corner)
