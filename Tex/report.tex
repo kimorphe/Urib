@@ -46,22 +46,52 @@
 \end{center}
 \vspace{10mm}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Let $a(\fat{x},t;\fat{x}_s)$ be an A-scan waveform of time $t$
-measured at $\fat{x}$ when the incident wave is excited by a 
- source point at $\fat{x}_s$. 
-Suppose that a set of A-scans 
+\section{Imaging Problem}
+\hspace{\parindent}
+We develop an ultrasonic imaging method for a flaw in a plate.
+Synthetic aperture focusing concept will be used for this purpose. 
+The imaging algorithm is formulated for a reasonably general model of a 
+ultrasonic testing (UT) shown schematically in Fig.*. 
+In this model, it is assumed that the incident ultrasonic wave is 
+excited at a point $\fat{x}_s$ on the top plate surface.
+The echoes returning from the flaw are also observed on the top surface 
+over an aperture $\cal R$.
+The ultrasonic echo signal captured with an transducer is usually given as a temporal 
+ waveform, and is called an A-scan in the context of ultrasonic nondestructive testing.
+We adopt this terminology in this article, and denote the A-scan captured 
+at $\fat{x}$ as $a(\fat{x},t;\fat{x}_s)$ where $t$ is the time elapsed from 
+the time of incident wave excitation. 
+Since A-scans are captured on $\cal R$, the whole dataset 
+ available for the imaging is written as 
 \begin{equation}
 	{\cal D} = \left\{
 		a(\fat{x},t;\fat{x}_s)\left| \fat{x}\in {\cal R},t>0 \right.
-	\right\}
+	\right\}.
 	\label{eqn:bscan_data}
 \end{equation}
-are measured over a receiver aperture ${\cal R}$, and consider synthesizing an 
-image of the scattering objects from the given dataset ${\cal D}$.
-A synthetic apertue algorithm is used for this purpose.
-In developing the synthetic aperture imaging method, it is assumed that the waveform 
-$a(\fat{x},t;\fat{x}_s)$ can be decomposed into the incident and 
-scattered components as 
+For given dataset $\cal D$, we consider synthesizing an image $I(\fat{x}_P)$ 
+of the unknown flaw, thereby estimate the location and size of the flaw.
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Synthetic Aperture Imaging Algorithm}
+\hspace{\parindent}
+The present synthetic imaging algorithm may be divided into two parts.
+The first part is a delay-and-sum operation on the measured A-scans ${\cal D}$. 
+The second part is a sampling or projection operation on the resulting summed A-scan.
+The delay law and the nature of the samplig/projection are both related closely 
+to the travel time of the ultrasonic wave.
+It is thus convenient to introduce a handy notation for the travel time. 
+When an ultrasonic wave travels from $\fat{y}$ to $\fat{x}$ 
+ taking a flight time $t_f$, we write
+\begin{equation}
+	t_f=T_f(\fat{x},\fat{y}).
+	\label{eqn:Tf}
+\end{equation}
+It reads "the travel time from \fat{y} to \fat{x} is $t_f$".
+In eq.(\ref{eqn:Tf}), it is meant that $t_f$ is a single travel time, while 
+$T_f$ is the function which returns the travel time for given point of 
+departure and arrival. 
+To process an A-scan with the help of time-of-flight concept, it is necessary to 
+decompose $a(\fat{x},t;\fat{x}_s)$ into the incident and scattered components as 
 \begin{equation}
 	a(\fat{x},t;\fat{x}_s)=
 	a^{in}(\fat{x},t;\fat{x}_s)
@@ -70,63 +100,57 @@ scattered components as
 	\label{eqn:wv_split}
 \end{equation}
 As in eq.(\ref{eqn:wv_split}), quantities associated with the incident and scattered wave 
-components are and will be denoted by the superscripts "in" and "sc", respectively.
-
-The imaging algorithm is divided into two parts.
-The first part is the delay-and-sum operation on the A-scans in ${\cal D}$. 
-The second part is the sampling of a wave amplitude from the summed A-scan.
-The laws of the delay-and-sum and that of samplig are both based on the flight time.
-It is hence convenient to introduce a time-of-flight function $T_f$.
-The function $T_f(\fat{x},\fat{y})$ returns a time $\tau$ required for the ultrasonic 
-wave to travel from a source ($\fat{y}$) to an obsevation point($\fat{x}$), and written as 
+components are and will be denoted with the superscripts "{\it in}" and "{\it sc}", respectively.
+With this decomposition, we may associate a flight time
 \begin{equation}
-	\tau=T_f(\fat{x},\fat{y}).
-	\label{eqn:Tf}
-\end{equation}
-If $T_f(\fat{x},\fat{y})$ is considered as a fuction of $\fat{x}$, it reduces to a travel time curve. 
-Returning to the decomposition of eq.(\ref{eqn:wv_split}), it is natural to define 
-the fligt time of the incident wave as 
-\begin{equation}
-	t^{in}(\fat{x})=T_f(\fat{x},\fat{x}_s), (\fat{x} \in {\cal R}).
+	t^{in}(\fat{x})=T_f(\fat{x},\fat{x}_s), (\fat{x} \in {\cal R})
 	\label{eqn:def_tin}
 \end{equation}
-If $t^{in}(\fat{x})$ is given for $\fat{x} \in {\cal R}$, the incident wave pulse 
-in each A-scan can be aligned at the origin of coordinate $t=0$ by translating 
-$a(x,t)$ by $T(x,x_s)$ as $a(x,t+T(x,x_s))$.
-If the translated A-scans are superimposed as 
+with the incident wave component $a^{in}(\fat{x},t;\fat{x}_s)$. 
+If $t^{in}(\fat{x})$ is estimated for every $\fat{x} \in {\cal R}$, 
+the incident wave pulse in each A-scan can be aligned at the origin 
+of the coordinate $t=0$ by translating $a(x,t)$ by $t^{in}(\fat{x})$ as 
+$a\left(\fat{x},t+t^{in}(\fat{x})\right)$.
+The A-scans translated thus are then superimposed as 
 \begin{equation}
-	\bar{a}^{in}(t)=\int_{\cal R} a(x,t+T(x,x_s))dx,
+	\bar{a}^{in}(t)=\int_{\cal R} a\left(\fat{x},t+t^{in}(\fat{x})\right)dx,
 	\label{eqn:asum_in}
 \end{equation}
-then the incient wave packets are interfered constructively and amplified in $\bar{a}^{in}(t)$ at $t=0$.
-Equation(\ref{eqn:asum_in}) is an exmaple of delay and sum operation, in which the waveform $a(x,t)$ 
-is delayed by $-T_f(x,x_s)$ and summed over $\cal R$.
-The summed A-scan similar to eq.(\ref{eqn:asum_in}) can be defined for the scattered waveform $a^{sc}(x,t)$. 
-However, defining the flight time for the scattered wave component is not straightforward. 
-For the scattering object of a general shape, it is not possible to define a unique flight time as every
- part of the scattering object could generate a scattered waves. 
- A simple trick to circumvent this difficulty is to consider the scattering objct as a  collection of 
- small, point-like scaterer distributed over the surface of the object. 
- Then the scatted wave flight time can be clearly defined for the constitutnet point scatteres. 
- This approach may be formulated more rigorously if an integral representaion of the scattered field, 
- which is beyon the scope of this article.
-When a point scattere is located at a pixel point $\fat{x}_P$, the scattered wave flight time  
+so that the incident wave pulse in $\bar{a}^{in}(t)$ be amplified to a degree 
+dependent on the accuracy of the estimated travel time.
+Clearly, eq.(\ref{eqn:asum_in}) is a delay-and-sum in which the waveform $a(\fat{x},t)$ 
+is delayed by $-t^{in}(\fat{x})$ and summed over the aperture $\cal R$.
+
+A summed A-scan similar to eq.(\ref{eqn:asum_in}) may be obtained for the 
+scattered wave component $a^{sc}(\fat{x},t)$. 
+Associating the flight time, however, with the scattered wave component is not straightforward. 
+This is because scattered waves are generated at every point on the scattereing object. 
+Consequently, it is not possible to pinpoint where exaxtly is a scattered wave is originated from. 
+ A simple and practical trick to circumvent this difficulty is to model the scattering object 
+ as a collection of small, point-like scaterers distributed densely but discretely over 
+ the surface of the object. Then the flight time can be assigned to each constituent point scatterer 
+ with no ambiguity. This approach may be formulated more rigorously if we descritize an 
+ integral representaion of the scattered field, which is beyond the scope of this article.
+When one of the point scatteres is located at $\fat{x}_P$, the flight time for the scattered wave 
  is given by 
 \begin{equation}
 	t_P^{sc}(\fat{x})=
 	T_f(\fat{x}_P,\fat{x}_s)
 	+
-	T_f(\fat{x},\fat{x}_P)
-	\label{eqn:}
+	T_f(\fat{x},\fat{x}_P).
+	\label{eqn:tsc}
 \end{equation}
-where the subscript $P$ is there as a remider that the flight time depend on the pixel point $\fat{x}_P$.
-Once $\fat{x}_P$ is specified, it is ready to align the scattered wave packet at 
-the origin of the coordinate and sum them up so that the wave packets be amplyfied in the 
-summed A-scan. The delay-and-sum operation may be written as follows. 
+The subscript $P$ in eq.(\ref{eqn:tsc}) is to remind that the flight time depend 
+on the location of the point scatterer.
+Then we can align and amplify the scattered wave packets at $t=0$ by the following delay-and-sum operation. 
 \begin{equation}
-	\bar{a}^{sc}_P(t)=\int _{\cal R} a^{sc}(\fat{x},t-t^{sc}_P(\fat{x}))d\fat{x}
+	\bar{a}^{sc}_P(t)=\int _{\cal R} a^{sc}(\fat{x},t+t^{sc}_P(\fat{x}))d\fat{x}
 	\label{eqn:asum_sc}
 \end{equation}
+The degree of amplicification depends obviously on the accuracy of the estimated $t^{sc}_P$. 
+It is equally or more important to note that the amplification would not occur 
+if there were not the scattere at $\fat{x}_P$, or if the scattered waves from $\fat{x}_P$ did 
+not take the path we have considerd in estimating $t^{sc}_P(\fat{x})$
 On the other hand, if there is no scattering object at $\fat{x}_P$, then there is no wave packet in $a^{sc}(x,t)$ 
 to be amplified. Thus the summed A-scan would be rather quiet having a small norm.
 This means the summed A-scan $\bar a^{sc}_P$ can be used as a measure of scattering intensity at $\fat{x}_P$. 
@@ -193,4 +217,44 @@ We can further generalize the projection $\cal S$, e.g. as
 where $*$ denotes a convolution product and $\left\| \cdot \right\|_p$ means the 
 $p-$norm. However, we're not going to elaborate the projection, but rather, investigate 
 how a relatively simple projection (\ref{eqn:S_cor}) works with the A-scans measured with an LDV. 
+\section{Numerical Implementation}
+\subsection{Incident and scattered wave splitting}
+\begin{equation}
+	u(x,t)=\int U(k,\omega) e^{i(kx-\omega t)} dkd\omega
+	\label{eqn:}
+\end{equation}
+The spectral content $U(k,\omega)$ corresponds to the 
+left(right) going wave in space-time domain when $k\omega >0 (<0)$. 
+Thus we can split $u$ into the left and right going wave by 
+a frequency-wave number domain filtering 
+\begin{equation}
+	u^{\pm}(x,t)=\int U(k,\omega)H(\pm k\omega) e^{i(kx-\omega t)} dkd\omega
+	\label{eqn:}
+\end{equation}
+where $H(s)$ is the Heaviside unit step function.
+\begin{equation}
+	H(s)=\left\{
+	\begin{array}{cc}
+		1 & (s >0) \\
+		0 & (s <0)
+	\end{array}
+	\right.
+	\label{eqn:}
+\end{equation}
+\subsection{Construction of the flight time function}
+There are infinitely many wave paths in the plate due to the wave reverberation.
+The number of paths increases exponentially if the mode conversion upon reflection 
+at the plate surfaces are taken into account.
+We look at small number of them to make the problem tractable.
+Furthermore, mode preseving ray paths that accampanies small number of reflections 
+ will be considerd. 
+ This makes the ray tracing problem greatly simple. 
+ To obtain the travel time, in a homogeneous material it suffice to 
+ obtain the travel path that connect the source to the receiver point 
+ after a given number of reflection.
+ The ray paths for an arbitray many reflections can be constructed by 
+ a successive application of a so called "image point method".
+The procedure of the image point method is illustrated in Fig.*, which should make 
+the concept of the method clear.
 \end{document}
+
