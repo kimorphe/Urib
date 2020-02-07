@@ -1,5 +1,5 @@
-report.pdf: report.dvi
-	dvipdfmx -p a4 -r 600 report.dvi
-report.dvi: report.tex
-	platex report.tex
+saft.pdf: saft.dvi
+	dvipdfmx -p a4 -r 600 saft.dvi
+saft.dvi: saft.tex
+	platex saft.tex
 

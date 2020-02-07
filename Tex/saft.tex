@@ -42,16 +42,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\vspace*{\baselineskip}
 \begin{center}
-{\Large \bf A Synthetic Aperture Focusing Algorithm for Ultrasonic Imaging}
+{\LARGE \bf Synthetic Aperture Focusing Algorithm \\ for Ultrasonic Imaging}
 \end{center}
 \vspace{10mm}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Imaging Problem}
 \hspace{\parindent}
-We develop an ultrasonic imaging method for a flaw in a plate.
-Synthetic aperture focusing concept will be used for this purpose. 
-The imaging algorithm is formulated for a reasonably general model of a 
-ultrasonic testing (UT) shown schematically in Fig.*. 
+In this article, we present our ultrasonic imaging method 
+for a reasonably general model of a ultrasonic testing (UT) 
+of a flawed plate as schematically shown in Fig.*. 
 In this model, it is assumed that the incident ultrasonic wave is 
 excited at a point $\fat{x}_s$ on the top plate surface.
 The echoes returning from the flaw are also observed on the top surface 
@@ -124,13 +123,13 @@ is delayed by $-t^{in}(\fat{x})$ and summed over the aperture $\cal R$.
 A summed A-scan similar to eq.(\ref{eqn:asum_in}) may be obtained for the 
 scattered wave component $a^{sc}(\fat{x},t)$. 
 Associating the flight time, however, with the scattered wave component is not straightforward. 
-This is because scattered waves are generated at every point on the scattereing object. 
-Consequently, it is not possible to pinpoint where exaxtly is a scattered wave is originated from. 
+This is because scattered waves are generated at every point on the scattering object. 
+Consequently, it is not possible to pinpoint where exactly is a scattered wave is originated from. 
  A simple and practical trick to circumvent this difficulty is to model the scattering object 
- as a collection of small, point-like scaterers distributed densely but discretely over 
+ as a collection of small, point-like scatterers distributed densely but discretely over 
  the surface of the object. Then the flight time can be assigned to each constituent point scatterer 
- with no ambiguity. This approach may be formulated more rigorously if we descritize an 
- integral representaion of the scattered field, which is beyond the scope of this article.
+ with no ambiguity. This approach may be formulated more rigorously if we discretize an 
+ integral representation of the scattered field, which is beyond the scope of this article.
 When one of the point scatteres is located at $\fat{x}_P$, the flight time for the scattered wave 
  is given by 
 \begin{equation}
@@ -147,22 +146,24 @@ Then we can align and amplify the scattered wave packets at $t=0$ by the followi
 	\bar{a}^{sc}_P(t)=\int _{\cal R} a^{sc}(\fat{x},t+t^{sc}_P(\fat{x}))d\fat{x}
 	\label{eqn:asum_sc}
 \end{equation}
-The degree of amplicification depends obviously on the accuracy of the estimated $t^{sc}_P$. 
-It is equally or more important to note that the amplification would not occur 
-if there were not the scattere at $\fat{x}_P$, or if the scattered waves from $\fat{x}_P$ did 
-not take the path we have considerd in estimating $t^{sc}_P(\fat{x})$
-On the other hand, if there is no scattering object at $\fat{x}_P$, then there is no wave packet in $a^{sc}(x,t)$ 
-to be amplified. Thus the summed A-scan would be rather quiet having a small norm.
-This means the summed A-scan $\bar a^{sc}_P$ can be used as a measure of scattering intensity at $\fat{x}_P$. 
-If the intensity is measued by a scalar quantitiy by samping or a projection, then we may synthesize a 
-map of scattered intesity by 
+Obviously, the degree of amplification depends on the accuracy of the estimation of $t^{sc}_P$. 
+It is equally or more important to note that the amplification would not occur if there were not 
+the scatterer at $\fat{x}_P$ in the first place, or if the scattered waves from $\fat{x}_P$ did 
+not take the path that has been considered in estimating $t^{sc}_P(\fat{x})$.
+This suggests that the summed A-scan $\bar a^{sc}_P$ can be used to assess the likelihood that 
+a point scatterer is actually at $\fat{x}_P$. 
+Although variety of different measures of likelihood can be invented, one of the 
+most simplest methods is the use of sampling or projection. 
+If we write the sampling/projection operation symbolically as ${\cal S}$, 
+we can think of creating a likelihood map 
 \begin{equation}
 	%I(\fat{x}_P)={\cal S} \left\{ \bar{a}^{sc}_P(t) \right\}
-	I(\fat{x}_P)={\cal S} \left[ \bar{a}^{sc}_P(t) \right]
-	\label{eqn:}
+	I(\fat{x}_P)={\cal S} \left[ \bar{a}^{sc}_P(t) \right], 
+	(\fat{x}_P \in A),
+	\label{eqn:image}
 \end{equation}
-where ${\cal S}$ denote the sampling(projection) operator from a space of 
- A-scan waveforms to the non-negative real coordinate $R^{+}$.
+over an area $A$, and is shown as an image of the scattering object.
+To take this imaging approach, the operator $\cal S$ need to be specified. 
  The simplest choice for $\cal S$ is a sampling by Dirac's delta function 
 \begin{equation}
 	{\cal S} \left[ 
@@ -174,16 +175,19 @@ where ${\cal S}$ denote the sampling(projection) operator from a space of
 	=
 	\bar{a}^{sc}_P(0)
 \end{equation}
-where $\left<\cdot,\, \cdot \right>$ means the dot product defined by 
+where $\left<\cdot,\, \cdot \right>$ is the dot product
 \begin{equation}
 	\left< f,g \right>=\int f(t)g(t) dt.
 	\label{eqn:}
 \end{equation}
-This is reasonable because the $\bar{a}^{sc}_P$ is constructed so that the 
-wave packet is amplified at $t=0$. However, this is not often a good choice 
-as the real A-scan is not an ideal pulse, and hence the peak amplitude 
-always comes after the theoretically estimated flight time. 
-A better alternative to automatically account such delay is to take a cross correlation 
+of two well behave functions $f$ and $g$.
+The intention is obvious because the $\bar{a}^{sc}_P$ is constructed so that the 
+wave packet is amplified at $t=0$. However, this is not a good choice when the scattered 
+wave packet is not an ideal pulse. In real A-scans, the peak amplitude of a  
+wave packet always comes after the theoretically estimated flight time. 
+The Dirac's delta sampling therefore results in an underestimation of the underlying wave packet. 
+A better alternative is a projection using a reference signal. 
+In this study, we adopts the following. 
 \begin{equation}
 	{\cal S} \left[ 
 		\bar{a}^{sc}_P(t) 
@@ -195,17 +199,16 @@ A better alternative to automatically account such delay is to take a cross corr
 			,\bar{a}^{sc}_P(t) 
 		\right>
 	}{
-		\left<
+		\left\| 
 			\bar{a}^{in}(t) 
-			,
-			\bar{a}^{in}(t) 
-		\right>
+		\right\|^2
 	}
 	\label{eqn:S_cor}
 \end{equation}
-where the uncertainty regarding the delay is compensated by the 
-uncertainty of summed incident wave pulse shape.
-We can further generalize the projection $\cal S$, e.g. as 
+where $\left\| f \right\|^2 =\left< f,f \right>$. 
+In eq.(\ref{eqn:S_cor}), an unknown delay is automatically compensated by the 
+delay in the reference signal.  
+We can further generalize the projection approach e.g. to 
 \begin{equation}
 	{\cal S} \left[ 
 		\bar{a}^{sc}_P(t) 
@@ -214,22 +217,33 @@ We can further generalize the projection $\cal S$, e.g. as
 	\left\|a^{in}(t)*a^{sc}(t)\right\|_p
 	\label{eqn:}
 \end{equation}
-where $*$ denotes a convolution product and $\left\| \cdot \right\|_p$ means the 
-$p-$norm. However, we're not going to elaborate the projection, but rather, investigate 
-how a relatively simple projection (\ref{eqn:S_cor}) works with the A-scans measured with an LDV. 
+where $p$ is a non-negative integer, $*$ denotes a convolution product, 
+and $\left\| f  \right\|_p= \left\{\int \left| f\right|^p\right\}^{\frac{1}{p}}$ 
+is the usual $p-$norm. However, we're not going to elaborate the projection operator. 
+Rather, we adopt a relatively simple projection operator (\ref{eqn:S_cor}) and 
+ investigate how it works with measured waveforms in an attempt of 
+ imaging by eq.(\ref{eqn:image}) with eqs.(\ref{eqn:asum_in}) and (\ref{eqn:asum_sc}).
 \section{Numerical Implementation}
 \subsection{Incident and scattered wave splitting}
+Let $u(x,t)$ be an wave amplitude at position $x$ and time $t$, and let 
+$U(k,\omega)$ be the Fourier transform of $u(x,t)$ given by 
 \begin{equation}
-	u(x,t)=\int U(k,\omega) e^{i(kx-\omega t)} dkd\omega
+	U(k,\omega)=\frac{1}{\left(2\pi\right)^2}
+	\int\int u(x,t)e^{-ikx+i\omega t} dxdt.
 	\label{eqn:}
 \end{equation}
-The spectral content $U(k,\omega)$ corresponds to the 
-left(right) going wave in space-time domain when $k\omega >0 (<0)$. 
-Thus we can split $u$ into the left and right going wave by 
-a frequency-wave number domain filtering 
+Then, the spectral representation of the wave field $u(x,t)$ may be written as 
+\begin{equation}
+	u(x,t)=\int U(k,\omega) e^{i(kx-\omega t)} dkd\omega.
+	\label{eqn:U2u}
+\end{equation}
+Noting that the exponential function $e^{ikx-i\omega t}$ represents a wave 
+traveling in $x>0(<0)$ direction when $k\omega >0(<0)$, 
+the wave field $u(x,t)$ can be split into the components traveling in the 
+positive and negative $x$ directions by a filtered Fourier transform:
 \begin{equation}
 	u^{\pm}(x,t)=\int U(k,\omega)H(\pm k\omega) e^{i(kx-\omega t)} dkd\omega
-	\label{eqn:}
+	\label{eqn:kw_filter}
 \end{equation}
 where $H(s)$ is the Heaviside unit step function.
 \begin{equation}
@@ -238,13 +252,18 @@ where $H(s)$ is the Heaviside unit step function.
 		1 & (s >0) \\
 		0 & (s <0)
 	\end{array}
-	\right.
+	\right. .
 	\label{eqn:}
 \end{equation}
+In our imaging algorithm, the splitting of eq.(\ref{eqn:wv_split}) is found 
+by the filtered Fourier transform (\ref{eqn:U2u}), considering that the wave traveling 
+toward and away from the flaw as the incident and the scattered wave component,respectively.
+%%%%%%%%%%%%%%%%%5
+\end{document}
 \subsection{Construction of the flight time function}
-There are infinitely many wave paths in the plate due to the wave reverberation.
-The number of paths increases exponentially if the mode conversion upon reflection 
-at the plate surfaces are taken into account.
+There are infinitely many wave paths in the plate due to reverberation.
+The number of paths further increases exponentially if the mode conversion 
+upon reflection at the plate surfaces are taken into account.
 We look at small number of them to make the problem tractable.
 Furthermore, mode preseving ray paths that accampanies small number of reflections 
  will be considerd. 
@@ -256,5 +275,4 @@ Furthermore, mode preseving ray paths that accampanies small number of reflectio
  a successive application of a so called "image point method".
 The procedure of the image point method is illustrated in Fig.*, which should make 
 the concept of the method clear.
-\end{document}
 
