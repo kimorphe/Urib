@@ -259,20 +259,119 @@ In our imaging algorithm, the splitting of eq.(\ref{eqn:wv_split}) is found
 by the filtered Fourier transform (\ref{eqn:U2u}), considering that the wave traveling 
 toward and away from the flaw as the incident and the scattered wave component,respectively.
 %%%%%%%%%%%%%%%%%5
+\subsection{Construction of the travel time function}
+\hspace{\parindent}
+For a given set of source and observation points in a plate, 
+there are infinitely many possible wave propagation paths 
+due to reverberation.
+To implement the imaging algorithm, we have to identify a path that 
+is most likely to be taken by the incident/scattered wave. 
+The travel time can evaluated for the selected path first by 
+measuring the path length and then dividing the length by the 
+wave velocity $c$.
+If the wave mode conversion is considered, the number of possible 
+propagation paths to be considered increases exponentially as the 
+number of reflection becomes larger. This would make the travel time 
+analysis computationally too demanding. In this study, therefore, 
+we look exclusively at the mode preserving paths, on which the wave 
+mode does not change before and after the reflection.
+%no the path does not split upon the reflection. 
+According to the Snell's law, the angles of incident and reflection are 
+identical with if the wave mode is not changed.
+This make the travel time analysis extremely simple, and consequently 
+the travel time function for any propagation path can be written explicitly. 
+
+
+There are four types of travel paths for the waves reverberate in a plate 
+as depicted in Fig.\ref{eqn:fig1}. Due to the mode preservation assumption, 
+a propagation path of any type can be straighten up. Thus, the path length can 
+be obtained by a straight forward application of Pythagoras theorem. 
+To formulate this procedure, let $a$ and $b$ be the heights of the source 
+and the observation points, respectively, measured from the bottom of 
+the plate of thickness $h$. Similarly, let $a'$ and $b'$ be the depths 
+of the source and the observation points from the top surface, respectively. 
+If we take type 1 path, for example, the straightened path may be drawn 
+as shown in Fig.\ref{eqn:fig2} for $n=3$ where $n$ is the number of reflection.
+It is easy to verify that the path length $L$ is given as
+\begin{equation}
+	L=\sqrt{X^2+H^2}, \ \ H=a+b+(n-1)h
+	\label{eqn:L3}
+\end{equation}
+where $X$ is the horizontal distance between the source and the observation points.
+The formulae for the remaining three types of path may be obtained in a similar fashion.
+Furthermore, the resulting formulae for all of the four path types are put together 
+if we introduce a variable $\sigma$ to denote the wave direction as 
+\begin{equation}
+	\sigma=
+	\left\{
+	\begin{array}{cc}
+		0 & {\rm for \: initially\: down-going\: wave} \\
+		1 & {\rm for \: initially\: up-going\: wave} 
+	\end{array}
+	\right.
+	,
+	\label{eqn:def_sigma}
+\end{equation}
+and a variable subsidiary to $n$ as 
+\begin{equation}
+	n'=n \: {\rm mod} 2.
+	\label{eqn:}
+\end{equation}
+Then the height $H$ of the straightened path may be written as 
+\begin{equation}
+	H(\sigma,\, n) = h_0+h_n+(n-1)h
+	\label{eqn:}
+\end{equation}
+with 
+\begin{equation}
+	h_0=
+	\left\{
+	\begin{array}{cc}
+		a &  (\sigma=0)\\
+		a'&  (\sigma=1)
+	\end{array}
+	\right.
+	, \ \ 
+	h_n=
+	\left\{
+	\begin{array}{cc}
+		b &  (\sigma \neq n')\\
+		b'&  (\sigma = n')
+	\end{array}
+	\right.
+	.
+	\label{eqn:}
+\end{equation}
+Finally, the path length $L$ and the travel time $T_f$ are 
+ given respectively as follows.
+\begin{equation}
+	L(\sigma ,n)=\sqrt{X^2+ H^2(\sigma ,n)}, \ \ 
+	T_f(\fat{x},\fat{y};\sigma,n)=\frac{L(\sigma,n)}{c}
+	\label{eqn:}
+\end{equation}
+where $c$ has been assumed to be constant.
+%--------------------
+\begin{figure}[h]
+	\begin{center}
+	\includegraphics[width=0.7\linewidth]{paths.eps} 
+	\end{center}
+	\caption{
+		Types of paths for the mode preserving wave propagation. 
+	} 
+	\label{fig:fig1}
+\end{figure}
+%--------------------
+\begin{figure}[h]
+	\begin{center}
+	\includegraphics[width=0.5\linewidth]{length.eps} 
+	\end{center}
+	\caption{
+		A straightened propagation paths, and the heigt $H$ and the 
+		horizontal distance $L$.
+	} 
+	\label{fig:fig2}
+\end{figure}
+%--------------------
+%--------------------
 \end{document}
-\subsection{Construction of the flight time function}
-There are infinitely many wave paths in the plate due to reverberation.
-The number of paths further increases exponentially if the mode conversion 
-upon reflection at the plate surfaces are taken into account.
-We look at small number of them to make the problem tractable.
-Furthermore, mode preseving ray paths that accampanies small number of reflections 
- will be considerd. 
- This makes the ray tracing problem greatly simple. 
- To obtain the travel time, in a homogeneous material it suffice to 
- obtain the travel path that connect the source to the receiver point 
- after a given number of reflection.
- The ray paths for an arbitray many reflections can be constructed by 
- a successive application of a so called "image point method".
-The procedure of the image point method is illustrated in Fig.*, which should make 
-the concept of the method clear.
 
